@@ -1,10 +1,9 @@
 package jpabook.japshop.domain.item;
-
-import jpabook.japshop.domain.Categories;
+import jpabook.japshop.domain.Category;
 import lombok.Data;
-
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -19,4 +18,7 @@ public abstract class Item {
     private String name;
     private int price;
     private int stockQuantity;
+
+    @ManyToMany(mappedBy = "items")
+    private List<Category> categories = new ArrayList<>();
 }
