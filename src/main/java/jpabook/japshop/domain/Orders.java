@@ -3,6 +3,7 @@ package jpabook.japshop.domain;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.persistence.criteria.Order;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +11,9 @@ import java.util.List;
 @Entity
 @Data
 public class Orders {
-    @Id @GeneratedValue
-    @Column(name ="orders_id")
+    @Id
+    @GeneratedValue
+    @Column(name = "orders_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -29,4 +31,71 @@ public class Orders {
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
+
+    //==연관관계 메서드==//
+    public void setMember(Member member) {
+        this.member = member;
+        ;
+        member.getOrders().add(this);
+    }
+
+    public void addOrderItem(OrderItem orderItem) {
+        orderItems.add(orderItem);
+        orderItem.setOrder(this);
+    }
+
+    public void setDelivery(Delivery delivery) {
+        this.delivery = delivery;
+        delivery.setOrder(this);
+    }
+
+    //==생성 메서드==//
+    public static Orders createOrders(Member member, Delivery delivery, OrderItem... orderItems) {
+        Orders orders = new Orders();
+        orders.setMember(member);
+        orders.setDelivery(delivery);
+        for (OrderItem orderItem : orderItems) {
+            orders.addOrderItem(orderItem);
+        }
+
+        orders.setStatus(OrderStatus.ORDER);
+        orders.setOrderDate(LocalDateTime.now());
+        return orders;
+    }
+
+    ;
+
+    //==비지니스 로직==//
+
+    /**
+     * 주문 취소
+     */
+    public void cancel() {
+        if (delivery.getStatus() == DeliveryStatus.COMP) {
+            throw new IllegalStateException("이미 배송완료된 상품은 취소가 불가능합니다.");
+        }
+
+        this.setStatus(OrderStatus.CANCEL);
+        for (OrderItem orderItem : orderItems) {
+            orderItem.cancel();
+        }
+    }
+
+
+    //==조회 로직==//
+
+    /**
+     * 전체 주문 가격 조회
+     *
+     * @return
+     */
+    public int getTotalPrice() {
+        int totalPrice = 0;
+        for (OrderItem orderItem : orderItems) {
+            totalPrice += orderItem.getTotalPrice();
+        }
+        return totalPrice;
+    }
+
+
 }
