@@ -5,6 +5,7 @@ import jpabook.japshop.domain.Member;
 import jpabook.japshop.domain.OrderStatus;
 import jpabook.japshop.domain.Orders;
 import jpabook.japshop.domain.item.Book;
+import jpabook.japshop.exception.NotEnoughStockException;
 import jpabook.japshop.repository.OrderRepository;
 
 
@@ -51,8 +52,15 @@ public class OrderServiceTest {
         assertEquals(1, getOrder.getOrderItems().size(), "주문한 상품 종류 수가 정확해야 한다.");
         assertEquals(book.getPrice() * 2, getOrder.getTotalPrice(), "주문 가격은 가격 * 수량이다.");
         assertEquals(8, book.getStockQuantity(), "주문 수량만큼 재고가 줄어야 한다.");
+    }
 
+    @Test
+    public void 상품주문_재고수량초과() throws Exception {
+        //given
 
+        //when
+
+        //then
     }
 
 }
