@@ -1,4 +1,5 @@
 package jpabook.japshop.domain.item;
+import com.sun.istack.NotNull;
 import jpabook.japshop.domain.Category;
 import jpabook.japshop.exception.NotEnoughStockException;
 import lombok.Data;
