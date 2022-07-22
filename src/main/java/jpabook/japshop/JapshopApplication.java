@@ -10,4 +10,6 @@ public class JapshopApplication {
 		SpringApplication.run(JapshopApplication.class, args);
 	}
 
+	//테스트
+
 }
