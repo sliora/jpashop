@@ -57,4 +57,10 @@ public class OrderRepository {
         }
         return query.getResultList();
     }
+
+    public List<Orders> findAll() {
+        return em.createQuery("select o from Orders o" +
+                                      " join fetch o.member m" +
+                                      " join fetch o.delivery d", Orders.class).getResultList();
+    }
 }
