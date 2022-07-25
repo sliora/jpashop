@@ -30,4 +30,6 @@ public class MemberApiController {
         }
     }
 
+    //브랜치 테스트
+
 }
