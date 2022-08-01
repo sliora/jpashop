@@ -63,4 +63,13 @@ public class OrderRepository {
                                       " join fetch o.member m" +
                                       " join fetch o.delivery d", Orders.class).getResultList();
     }
+
+    public List<OrderSimpleQueryDto> findOrderDtos() {
+        return em.createQuery(
+                "select new jpabook.japshop.repository.OrderSimpleQueryDto(o.id, m.name, o.orderDate, o.status, m.address) " +
+                        " from Orders o" +
+                        " join o.member m" +
+                        " join o.delivery d", OrderSimpleQueryDto.class)
+                .getResultList();
+    }
 }
