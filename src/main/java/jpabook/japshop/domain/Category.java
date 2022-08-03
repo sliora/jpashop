@@ -1,5 +1,6 @@
 package jpabook.japshop.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jpabook.japshop.domain.item.Item;
 import lombok.Data;
 
@@ -20,6 +21,7 @@ public class Category {
     @JoinTable(name = "category_item",
             joinColumns = @JoinColumn(name = "category_id"),
             inverseJoinColumns = @JoinColumn(name = "item_id"))
+    @JsonIgnore
     private List<Item> items = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
