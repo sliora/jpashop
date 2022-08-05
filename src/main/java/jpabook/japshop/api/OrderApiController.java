@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.criteria.Order;
@@ -44,6 +45,22 @@ public class OrderApiController {
         return collect;
     }
 
+    @GetMapping("/api/v3/orders")
+    public List<OrdersDto> ordersV3() {
+        List<Orders> getOrders = orderRepository.findAllWithItem();
+        List<OrdersDto> collect = getOrders.stream().map(o -> new OrdersDto(o)).collect(Collectors.toList());
+        return collect;
+    }
+
+    @GetMapping("/api/v3.1/orders")
+    public List<OrdersDto> ordersV3_page(
+            @RequestParam(value = "offset") int offset,
+            @RequestParam(value = "limit") int limit) {
+        List<Orders> getOrders = orderRepository.findAllWithMemberDelivery(offset, limit);
+        List<OrdersDto> collect = getOrders.stream().map(o -> new OrdersDto(o)).collect(Collectors.toList());
+        return collect;
+    }
+
     @Data
     static class OrdersDto {
         private Long orderId;
@@ -51,7 +68,7 @@ public class OrderApiController {
         private LocalDateTime orderDate;
         private OrderStatus orderStatus;
         private Address address;
-        private List<OrderItem> orderItems;
+        private List<OrderItemDto> orderItems;
 
         public OrdersDto(Orders orders) {
             this.orderId = orders.getId();
@@ -59,16 +76,23 @@ public class OrderApiController {
             this.orderDate = orders.getOrderDate();
             this.orderStatus = orders.getStatus();
             this.address = orders.getMember().getAddress();
-            //orders.getOrderItems().stream().map(o -> new OrderItemDto(o)).collect(Collectors.toList());
-            this.orderItems = orders.getOrderItems();
+            this.orderItems = orders.getOrderItems().stream().map(o -> new OrderItemDto(o)).collect(Collectors.toList());
+            //this.orderItems = orders.getOrderItems();
         }
 
-        /*@Getter
+        @Getter
         private class OrderItemDto {
-            private
 
-            public OrderItemDto(OrderItem item) {
+            private String itemName;
+            private int orderPrice;
+            private int count;
+
+            public OrderItemDto(OrderItem orderItem) {
+                this.itemName = orderItem.getItem().getName();
+                this.orderPrice = orderItem.getOrderPrice();
+                this.count = orderItem.getCount();
+
             }
-        }*/
+        }
     }
 }

@@ -72,4 +72,29 @@ public class OrderRepository {
                         " join o.delivery d", OrderSimpleQueryDto.class)
                 .getResultList();
     }
+
+    public List<Orders> findAllWithItem() {
+        return em.createQuery("select o from Orders o " +
+                                " join fetch o.member m" +
+                                " join fetch o.delivery d" +
+                                " join fetch o.orderItems oi" +
+                                " join fetch oi.item i", Orders.class
+        ).getResultList();
+    }
+
+    public List<Orders> findAllWithMemberDelivery() {
+        return em.createQuery("select o from Orders o " +
+                                " join fetch o.member m" +
+                                " join fetch o.delivery d", Orders.class
+        ).getResultList();
+    }
+
+    public List<Orders> findAllWithMemberDelivery(int offset, int limit) {
+        return em.createQuery("select o from Orders o " +
+                " join fetch o.member m" +
+                " join fetch o.delivery d", Orders.class
+        )       .setFirstResult(offset)
+                .setMaxResults(limit)
+                .getResultList();
+    }
 }
