@@ -6,6 +6,8 @@ import jpabook.japshop.domain.OrderItem;
 import jpabook.japshop.domain.OrderStatus;
 import jpabook.japshop.domain.Orders;
 import jpabook.japshop.repository.OrderRepository;
+import jpabook.japshop.repository.order.query.OrderQueryDto;
+import jpabook.japshop.repository.order.query.OrderQueryRepository;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 public class OrderApiController {
 
     private final OrderRepository orderRepository;
+    private final OrderQueryRepository orderQueryRepository;
 
     //모듈이 없기 떄문에 안됨..
     @GetMapping("/api/v1/orders")
@@ -59,6 +62,11 @@ public class OrderApiController {
         List<Orders> getOrders = orderRepository.findAllWithMemberDelivery(offset, limit);
         List<OrdersDto> collect = getOrders.stream().map(o -> new OrdersDto(o)).collect(Collectors.toList());
         return collect;
+    }
+
+    @GetMapping("api/v4/orders")
+    public List<OrderQueryDto> ordersV4() {
+        return orderQueryRepository.findOrderQueryDtos();
     }
 
     @Data
